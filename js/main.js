@@ -5,36 +5,19 @@ app.filter('escape', function() {
 });
 
 app.controller('main', function($scope, $http, $analytics) {
-    function updateResults(query) {
-        if (typeof query == "undefined" || !query) {
-            $('#autocomplete').val('');
+    var mainInput = $('input[name="q"]');
+    var oldQuery = mainInput.val().trim();
+
+    function updateResults() {
+        var query = mainInput.val().trim();
+
+        if (query == oldQuery) {
             return;
         }
 
         $analytics.eventTrack(query, {
             category: 'Query'
         });
-
-        var autocomplete_params = $.param({
-            callback: 'JSON_CALLBACK',
-            client: 'youtube',
-            hl: 'en',
-            q: query
-        });
-
-        $http
-            .jsonp("http://suggestqueries.google.com/complete/search?" + autocomplete_params)
-            .then(function(json) {
-                var autocomplete = $('#autocomplete').val();
-                var query = $('input[name="q"]').val();
-                $('#autocomplete').val('');
-
-                var suggested = json.data[1][0][0];
-
-                if (suggested != query && suggested.indexOf(query) >= 0) {
-                    $('#autocomplete').val(suggested);
-                }
-            });
 
         var results_params = $.param({
             callback: 'JSON_CALLBACK',
@@ -47,15 +30,61 @@ app.controller('main', function($scope, $http, $analytics) {
             .then(function(json) {
                 $scope.serp_results = json.data.responseData.results;
             });
+
+        oldQuery = query;
     }
 
-    $scope.$watch('query', updateResults);
+    $scope.$watch('query', function (query) {
+        query = query.trim();
+
+        if (typeof query == "undefined" || !query) {
+            $('#autocomplete').val('');
+            return;
+        }
+
+        var autocomplete_params = $.param({
+            callback: 'JSON_CALLBACK',
+            client: 'youtube',
+            hl: 'en',
+            q: query
+        });
+
+        $http
+            .jsonp("http://suggestqueries.google.com/complete/search?" + autocomplete_params)
+            .then(function(json) {
+                var autocomplete = $('#autocomplete').val();
+                var query = mainInput.val();
+                $('#autocomplete').val('');
+
+                var suggested = json.data[1][0][0];
+
+                if (suggested != query && suggested.indexOf(query) >= 0) {
+                    $('#autocomplete').val(suggested);
+                }
+            });
+    });
 
     jQuery(document).ready(function($) {
-        $('input[name="q"]').keydown(function(event) {
+
+        // setup before functions
+        var typingTimer; // timer identifier
+        var doneTypingInterval = 1000; // time in ms (1 second)
+
+        // on keyup, start the countdown
+        mainInput.on('keyup', function() {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(updateResults, doneTypingInterval);
+        });
+
+        // on keydown, clear the countdown 
+        mainInput.on('keydown', function() {
+            clearTimeout(typingTimer);
+        });
+
+        mainInput.keydown(function(event) {
             var code = event.keyCode || event.which;
             var autocomplete = $('#autocomplete').val();
-            var query = $('input[name="q"]').val();
+            var query = mainInput.val().trim();
 
             if (code == 9) {
                 event.preventDefault();
@@ -65,15 +94,15 @@ app.controller('main', function($scope, $http, $analytics) {
                         category: 'Tab'
                     });
 
-                    $('input[name="q"]').val(autocomplete);
-                    updateResults(autocomplete);
+                    mainInput.val(autocomplete);
+                    updateResults();
                 }
 
                 return false;
             }
         });
 
-        $('input[name="q"]').keyup(function(event) {
+        mainInput.keyup(function(event) {
             // event.keyCode == 13 := enter
             if (event.keyCode == 13 && $('.serp li.focus').length > 0) {
                 var _href = $('.serp li.focus a:first').attr('href');

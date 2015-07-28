@@ -133,3 +133,14 @@ h1
 .serp li .visibleUrl {
     color: #005f00;
 }
+
+#loading {
+    padding: 15px;
+    line-height: 18px;
+    height: 18px;
+}
+
+#loading span {
+    position: relative;
+    top: -3px;
+}

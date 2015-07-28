@@ -1,4 +1,4 @@
-<ul class="serp">
+<ul class="serp" ng-if="serp_results">
     <li ng-repeat="result in serp_results" ng-class="$first ? 'focus' : null">
         <img src="http://free.pagepeeker.com/v2/thumbs.php?size=t&amp;url={{ result.unescapedUrl | escape }}" class="thumbnail" />
         <img src="http://www.google.com/s2/favicons?domain_url={{ result.unescapedUrl | escape }}" class="favicon"/> <a class="title" ng-if="result.unescapedUrl" href="{{ result.unescapedUrl }}" ng-bind-html="result.title" analytics-on analytics-event="{{ result.unescapedUrl }}" analytics-category="Location click"></a>
@@ -8,3 +8,4 @@
         </small>
     </li>
 </ul>
+<ng-include ng-if="!serp_results" src="'tpl/loading.html'"></ng-include>
