@@ -1,10 +1,10 @@
-var app = angular.module('app', ['ngSanitize']);
+var app = angular.module('app', ['ngSanitize', 'angulartics', 'angulartics.google.analytics']);
 
 app.filter('escape', function () {
     return window.encodeURIComponent;
 });
 
-app.controller('main', function ($scope, $http) {
+app.controller('main', function ($scope, $http, $analytics) {
     function updateResults(query) {
         if (typeof query == "undefined" || !query) {
             $('#autocomplete').val('');
@@ -54,6 +54,7 @@ app.controller('main', function ($scope, $http) {
             var query = $('input[name="q"]').val();
 
             if (code == 9) {
+                $analytics.eventTrack('tab');
                 event.preventDefault();
 
                 if (autocomplete && typeof autocomplete != "undefined" && autocomplete.indexOf(query) >= 0) {
@@ -71,7 +72,10 @@ jQuery(document).ready(function($) {
     $('input[name="q"]').keyup(function(event) {
         // event.keyCode == 13 := enter
         if (event.keyCode == 13 && $('.serp li.focus').length > 0) {
-            window.location = $('.serp li.focus a:first').attr('href');
+            var _href = $('.serp li.focus a:first').attr('href');
+            $analytics.eventTrack('enter');
+            $analytics.pageTrack(_href);
+            window.location = _href;
         }
 
         // event.keyCode == 38 := up
@@ -86,6 +90,7 @@ jQuery(document).ready(function($) {
 
         var _old = $('.serp li.focus').index() || 0;
         var _new = _old + (event.keyCode == 40 ? 1 : -1);
+        $analytics.eventTrack(event.keyCode == 40 ? 'up' : 'down');
 
         if (_new < 0) {
             _new = $('.serp li').length - 1;
