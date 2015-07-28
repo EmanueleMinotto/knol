@@ -1,10 +1,10 @@
 <ul class="serp">
     <li ng-repeat="result in serp_results" ng-class="$first ? 'focus' : null">
         <img src="http://free.pagepeeker.com/v2/thumbs.php?size=t&amp;url={{ result.unescapedUrl | escape }}" class="thumbnail" />
-        <img src="http://www.google.com/s2/favicons?domain_url={{ result.unescapedUrl | escape }}" class="favicon"/> <a class="title" ng-if="result.unescapedUrl" href="{{ result.unescapedUrl }}" ng-bind-html="result.title" analytics-on></a>
+        <img src="http://www.google.com/s2/favicons?domain_url={{ result.unescapedUrl | escape }}" class="favicon"/> <a class="title" ng-if="result.unescapedUrl" href="{{ result.unescapedUrl }}" ng-bind-html="result.title" analytics-on analytics-event="{{ result.unescapedUrl }}" analytics-category="Location click"></a>
         <div ng-if="result.content" ng-bind-html="result.content"></div>
         <small>
-            <span class="visibleUrl">{{ result.visibleUrl }}</span> &middot; <a href="{{ result.cacheUrl }}" analytics-on>Cached version</a>
+            <span class="visibleUrl">{{ result.visibleUrl }}</span> &middot; <a href="{{ result.cacheUrl }}" analytics-on analytics-event="{{ result.unescapedUrl }}" analytics-category="Cached version">Cached version</a>
         </small>
     </li>
 </ul>
