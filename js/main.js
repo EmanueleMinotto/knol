@@ -1,10 +1,10 @@
 var app = angular.module('app', ['ngSanitize', 'angulartics', 'angulartics.google.analytics']);
 
-app.filter('escape', function () {
+app.filter('escape', function() {
     return window.encodeURIComponent;
 });
 
-app.controller('main', function ($scope, $http, $analytics) {
+app.controller('main', function($scope, $http, $analytics) {
     function updateResults(query) {
         if (typeof query == "undefined" || !query) {
             $('#autocomplete').val('');
@@ -20,7 +20,7 @@ app.controller('main', function ($scope, $http, $analytics) {
 
         $http
             .jsonp("http://suggestqueries.google.com/complete/search?" + autocomplete_params)
-            .then(function (json) {
+            .then(function(json) {
                 var autocomplete = $('#autocomplete').val();
                 var query = $('input[name="q"]').val();
                 $('#autocomplete').val('');
@@ -40,7 +40,7 @@ app.controller('main', function ($scope, $http, $analytics) {
 
         $http
             .jsonp("http://ajax.googleapis.com/ajax/services/search/web?" + results_params)
-            .then(function (json) {
+            .then(function(json) {
                 $scope.serp_results = json.data.responseData.results;
             });
     }
@@ -65,41 +65,39 @@ app.controller('main', function ($scope, $http, $analytics) {
                 return false;
             }
         });
-    });
-});
 
-jQuery(document).ready(function($) {
-    $('input[name="q"]').keyup(function(event) {
-        // event.keyCode == 13 := enter
-        if (event.keyCode == 13 && $('.serp li.focus').length > 0) {
-            var _href = $('.serp li.focus a:first').attr('href');
-            $analytics.eventTrack('enter');
-            $analytics.pageTrack(_href);
-            window.location = _href;
-        }
+        $('input[name="q"]').keyup(function(event) {
+            // event.keyCode == 13 := enter
+            if (event.keyCode == 13 && $('.serp li.focus').length > 0) {
+                var _href = $('.serp li.focus a:first').attr('href');
+                $analytics.eventTrack('enter');
+                $analytics.pageTrack(_href);
+                window.location = _href;
+            }
 
-        // event.keyCode == 38 := up
-        // event.keyCode == 40 := down
-        if (event.keyCode != 40 && event.keyCode != 38) {
-            return;
-        }
+            // event.keyCode == 38 := up
+            // event.keyCode == 40 := down
+            if (event.keyCode != 40 && event.keyCode != 38) {
+                return;
+            }
 
-        if ($('.serp li').length == 0) {
-            return;
-        }
+            if ($('.serp li').length == 0) {
+                return;
+            }
 
-        var _old = $('.serp li.focus').index() || 0;
-        var _new = _old + (event.keyCode == 40 ? 1 : -1);
-        $analytics.eventTrack(event.keyCode == 40 ? 'up' : 'down');
+            var _old = $('.serp li.focus').index() || 0;
+            var _new = _old + (event.keyCode == 40 ? 1 : -1);
+            $analytics.eventTrack(event.keyCode == 40 ? 'up' : 'down');
 
-        if (_new < 0) {
-            _new = $('.serp li').length - 1;
-        }
-        if (_new > ($('.serp li').length - 1)) {
-            _new = 0;
-        }
+            if (_new < 0) {
+                _new = $('.serp li').length - 1;
+            }
+            if (_new > ($('.serp li').length - 1)) {
+                _new = 0;
+            }
 
-        $('.serp li').removeClass('focus');
-        $('.serp li').eq(_new).addClass('focus');
+            $('.serp li').removeClass('focus');
+            $('.serp li').eq(_new).addClass('focus');
+        });
     });
 });
