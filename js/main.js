@@ -87,7 +87,7 @@ app.controller('main', function($scope, $http, $analytics) {
 
             var _old = $('.serp li.focus').index() || 0;
             var _new = _old + (event.keyCode == 40 ? 1 : -1);
-            $analytics.eventTrack(event.keyCode == 40 ? 'up' : 'down');
+            $analytics.eventTrack(event.keyCode == 40 ? 'down' : 'up');
 
             if (_new < 0) {
                 _new = $('.serp li').length - 1;
