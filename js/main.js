@@ -11,6 +11,10 @@ app.controller('main', function($scope, $http, $analytics) {
             return;
         }
 
+        $analytics.eventTrack(query, {
+            category: 'Query'
+        });
+
         var autocomplete_params = $.param({
             callback: 'JSON_CALLBACK',
             client: 'youtube',
@@ -54,10 +58,13 @@ app.controller('main', function($scope, $http, $analytics) {
             var query = $('input[name="q"]').val();
 
             if (code == 9) {
-                $analytics.eventTrack('tab');
                 event.preventDefault();
 
                 if (autocomplete && typeof autocomplete != "undefined" && autocomplete.indexOf(query) >= 0) {
+                    $analytics.eventTrack(query + ' => ' + autocomplete, {
+                        category: 'Tab'
+                    });
+
                     $('input[name="q"]').val(autocomplete);
                     updateResults(autocomplete);
                 }
@@ -70,8 +77,9 @@ app.controller('main', function($scope, $http, $analytics) {
             // event.keyCode == 13 := enter
             if (event.keyCode == 13 && $('.serp li.focus').length > 0) {
                 var _href = $('.serp li.focus a:first').attr('href');
-                $analytics.eventTrack('enter');
-                $analytics.pageTrack(_href);
+                $analytics.eventTrack(_href, {
+                    category: 'Location'
+                });
                 window.location = _href;
             }
 
@@ -87,7 +95,9 @@ app.controller('main', function($scope, $http, $analytics) {
 
             var _old = $('.serp li.focus').index() || 0;
             var _new = _old + (event.keyCode == 40 ? 1 : -1);
-            $analytics.eventTrack(event.keyCode == 40 ? 'down' : 'up');
+            $analytics.eventTrack(event.keyCode == 40 ? 'down' : 'up', {
+                category: 'Keyboard'
+            });
 
             if (_new < 0) {
                 _new = $('.serp li').length - 1;
