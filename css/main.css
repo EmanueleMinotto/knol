@@ -1,0 +1,135 @@
+@import "http://fonts.googleapis.com/css?family=Megrim";
+
+*
+{
+    outline:none
+}
+
+main
+{
+    border:1px solid #ccc;
+    padding:3px;
+    background-color:#ddd;
+    border-radius:2px
+}
+
+body
+{
+    width:600px;
+    margin:40px auto;
+    font-family:"Verdana","Geneva","sans-serif";
+    font-size:10px
+}
+
+html,body,output
+{
+    background-color:#fff
+}
+
+#fq
+{
+    border:1px solid #ccc;
+    position:relative;
+    background-color:#fff;
+    height:25px;
+    line-height:25px
+}
+
+input[name="q"]
+{
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:11;
+    background:transparent
+}
+
+input#autocomplete
+{
+    position:absolute;
+    top:0;
+    left:0;
+    background:transparent;
+    z-index:10;
+    color:#cdcdcd
+}
+
+#fq input
+{
+    padding:5px;
+    width:100%;
+    display:block;
+    font-size:1.2em;
+    border-width:0
+}
+
+input,output
+{
+    font-family:"Verdana","Geneva","sans-serif";
+    font-size:11px
+}
+
+output
+{
+    border:1px solid #ccc;
+    background-color:#fff;
+    margin-top:3px;
+    display:block;
+    color:#333
+}
+
+output #abstract
+{
+    padding:15px
+}
+
+h1
+{
+    margin-bottom:2px;
+    font-size:3em;
+    font-family:'Megrim',cursive
+}
+
+.serp {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.serp li
+{
+    padding:10px;
+    min-height: 70px;
+}
+
+.serp a {
+    text-decoration:none;
+}
+
+.serp li .title
+{
+    line-height: 18px;
+    height: 18px;
+    font-size: 1.1em;
+    position: relative;
+    top: -3px;
+}
+
+.serp li .favicon {
+    width: 16px;
+    height: 16px;
+}
+
+.serp li .thumbnail {
+    float: right;
+    margin-left: 5px;
+}
+
+.serp li.focus
+{
+    background-color:#ededed;
+}
+
+.serp li .visibleUrl {
+    color: #005f00;
+}
